@@ -1,7 +1,7 @@
 function generateMetrics(){
-    const cpu=Math.floor(Math.random*100);
-    const memory=Math.floor(Math.random*100);
-    const requestsPerSecond=Math.floor(Math.random*500);
+    const cpu=Math.floor(Math.random()*100);
+    const memory=Math.floor(Math.random()*100);
+    const requestsPerSecond=Math.floor(Math.random()*500);
     return {
         cpu,
         memory,
