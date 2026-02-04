@@ -12,4 +12,4 @@ function startAutoScaler(){
         console.log("Current Instances:",scalingDecision.currentInstances)
     },5000);
 }
-MediaSourceHandle.exports={startAutoscaler};
+module.exports={startAutoScaler};
