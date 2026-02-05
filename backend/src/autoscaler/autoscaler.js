@@ -9,7 +9,8 @@ function startAutoScaler(){
         console.log("Memory:",metrics.memory);
         console.log("Requests/Sec:",metrics.requestsPerSecond);
         console.log("Scaling Action:",scalingDecision.action);
-        console.log("Current Instances:",scalingDecision.currentInstances)
+        console.log("Current Instances:",scalingDecision.currentInstances);
+        console.log("=======================================");
     },5000);
 }
 module.exports={startAutoScaler};
