@@ -1,6 +1,6 @@
 const {generateMetrics}=require("../services/metrics.service");
-function getCurrentMetrics(req,res){
-    const metrics=generateMetrics();
+async function getCurrentMetrics(req,res){
+    const metrics= await generateMetrics();
     res.json(metrics);
 }
 module.exports={getCurrentMetrics};

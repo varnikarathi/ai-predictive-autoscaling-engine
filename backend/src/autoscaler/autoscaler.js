@@ -1,9 +1,27 @@
 const {generateMetrics}=require("../services/metrics.service");
+const LinearRegression=require("../../../ai/predictor");
 const {evaluateScaling}=require("../services/scaling.service");
+
+const model =new LinearRegression();
+const cpuHistory=[];
+
 function startAutoScaler(){
-    setInterval(()=>{
-        const metrics=generateMetrics();
-        const scalingDecision=evaluateScaling(metrics.cpu);
+    setInterval(async ()=>{
+
+        const metrics= await generateMetrics();
+        cpuHistory.push(metrics.cpu);
+        if(cpuHistory.length>10)cpuHistory.shift();
+
+        let cpuToUse=metrics.cpu;
+        let predictedCPU=null;
+        if(cpuHistory.length>=6){
+            model.train(cpuHistory);
+            predictedCPU=model.predict(cpuHistory.length+1);
+            cpuToUse=predictedCPU;
+        }
+
+        const scalingDecision=evaluateScaling(cpuToUse);
+
         console.log("==============AUTOSCALER================");
         console.log("CPU:",metrics.cpu);
         console.log("Memory:",metrics.memory);

@@ -10,10 +10,10 @@ class LinearRegression{
         let sumXY=0;                        //total of time index * cpu usage
         let sumXX=0;                        //total of time index squared    
         data.forEach((y,x)=>{
-            sumX=+x;
-            sumY=+y;
-            sumXY=+(x*y);
-            sumXX=+(x*x);
+            sumX +=x;
+            sumY +=y;
+            sumXY +=(x*y);
+            sumXX +=(x*x);
         });
         this.m=(n*sumXY-sumX*sumY)/(n*sumXX-sumX*sumX);
         this.b=(sumY-this.m*sumX)/n;                          
@@ -22,4 +22,4 @@ class LinearRegression{
         return this.m*x+this.b;
     }    
 }
-module.exports={LinearRegression};
+module.exports=LinearRegression;

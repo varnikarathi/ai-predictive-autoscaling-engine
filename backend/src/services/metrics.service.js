@@ -1,14 +1,13 @@
-const os=require("os");
-function generateMetrics(){
-    const cpuLoad=os.loadavg()[0];                            // 1 minute load average
-    const totalMem=os.totalmem();
-    const freeMem=os.freemem();
+const si= require("systeminformation");
 
-    const cpu=Math.min(Math.floor(cpuLoad*20),100);
+async function generateMetrics(){
+    const cpuData = await si.currentLoad();                     //returns load,cores etc.          
+    const memData = await si.mem();                             //returns total,available ,used etc.
+    const cpu= Math.round(cpuData.currentLoad);      
 
-    const memory=Math.round(((totalMem-freeMem)/totalMem)*100);
-
-    const requestsPerSecond=Math.floor(Math.random()*500);
+    const memory=Math.round((memData.total-memData.available)/memData.total*100);
+    
+    const requestsPerSecond=Math.floor(Math.random()*500);      //stimulates traffic load 
     return {
         cpu,
         memory,
