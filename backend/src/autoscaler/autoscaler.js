@@ -10,25 +10,29 @@ function startAutoScaler(){
 
         const metrics= await generateMetrics();
         cpuHistory.push(metrics.cpu);
+
         if(cpuHistory.length>10)cpuHistory.shift();
 
-        let cpuToUse=metrics.cpu;
-        let predictedCPU=null;
+        let predictedCPU=metrics.cpu;
+        let confidence=0;
+
         if(cpuHistory.length>=6){
             model.train(cpuHistory);
             predictedCPU=model.predict(cpuHistory.length+1);
-            cpuToUse=predictedCPU;
+            confidence=model.confidence(cpuHistory);
         }
 
-        const scalingDecision=evaluateScaling(cpuToUse);
+        const scalingDecision=evaluateScaling(predictedCPU,confidence);
 
         console.log("==============AUTOSCALER================");
-        console.log("CPU:",metrics.cpu);
-        console.log("Memory:",metrics.memory);
-        console.log("Requests/Sec:",metrics.requestsPerSecond);
-        console.log("Scaling Action:",scalingDecision.action);
-        console.log("Current Instances:",scalingDecision.currentInstances);
-        console.log("=======================================");
+        console.log({
+            currentCPU: metrics.cpu,
+            predictedCPU: Math.round(predictedCPU),
+            confidence: Math.round(confidence*100)+"%",
+            action: scalingDecision.action,
+            instances: scalingDecision.currentInstances
+        });
+        console.log("========================================");
     },5000);
 }
 module.exports={startAutoScaler};
