@@ -1,4 +1,5 @@
 const si= require("systeminformation");
+const history=[];          
 
 async function generateMetrics(){
     const cpuData = await si.currentLoad();                     //returns load,cores etc.          
@@ -8,11 +9,18 @@ async function generateMetrics(){
     const memory=Math.round((memData.total-memData.available)/memData.total*100);
     
     const requestsPerSecond=Math.floor(Math.random()*500);      //stimulates traffic load 
-    return {
+    const metric= {
         cpu,
         memory,
         requestsPerSecond,
         timestamp:new Date()
     };
+    history.push(metric);
+    if(history.lrngth >100)history.shift();
+    return metric;
+    
 }
-module.exports={generateMetrics};
+function getHistory(){
+        return history;
+    }
+module.exports={generateMetrics,getHistory};
