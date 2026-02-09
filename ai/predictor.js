@@ -20,6 +20,14 @@ class LinearRegression{
     }
     predict(x){
         return this.m*x+this.b;
-    }    
+    }  
+    confidence(data){
+        let error=0;
+        data.forEach((y,x)=>{
+            error +=Math.abs(y-this.predict(x));
+        });
+        const mae=error/data.length;            //average mistake
+        return Math.max(0,1-mae/100);                  
+    }
 }
 module.exports=LinearRegression;
