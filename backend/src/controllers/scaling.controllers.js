@@ -1,11 +1,18 @@
-const {evaluateScaling}=require("../services/scaling.service");
-function scaleSystem(req,res){
-    const {cpu}=req.body;
-    if(cpu===undefined){
-        return res.status(400).json({error:"CPU usage is required"});
+const { evaluateScaling, setInstances } = require("../services/scaling.service");
 
+function scaleSystem(req, res) {
+    const { action, instances, cpu } = req.body;
+
+    if (action === "set" && instances !== undefined) {
+        return res.json(setInstances(instances));
     }
-    const decision=evaluateScaling(cpu);
+
+    if (cpu === undefined) {
+        return res.status(400).json({ error: "CPU usage is required" });
+    }
+
+    const decision = evaluateScaling(cpu);
     res.json(decision);
 }
-module.exports={scaleSystem};
+
+module.exports = { scaleSystem };
