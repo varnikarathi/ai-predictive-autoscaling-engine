@@ -49,7 +49,7 @@ Instead of waiting for CPU to spike above a threshold and then scrambling to spi
 ┌─────────────────────────────────────────────────────────────────────┐
 │                      BROWSER  (port 3000)                           │
 │                                                                     │
-│   Zustand Store ◄── useWebSocket hook ◄── WebSocket (port 5001)    │
+│   Zustand Store ◄── useWebSocket hook ◄── WebSocket (port 5001)     │
 │        │                                                            │
 │        ▼                                                            │
 │   useMetrics hook                                                   │
@@ -75,16 +75,16 @@ Instead of waiting for CPU to spike above a threshold and then scrambling to spi
 │                                                                     │
 │  Autoscaler Loop (every 5s via .env POLL_INTERVAL_MS)               │
 │  generateMetrics → cpuHistory → model.train → model.predict         │
-│  → model.confidence → evaluateScaling → wss.broadcast              │
+│  → model.confidence → evaluateScaling → wss.broadcast               │
 └───────────────────────────────┬─────────────────────────────────────┘
                                 │ require
                                 ▼
 ┌─────────────────────────────────────────────────────────────────────┐
 │                      AI ENGINE                                      │
-│  ai/predictor.js — LinearRegression class                          │
-│  • train(data[])    — Ordinary Least Squares, O(n)                 │
-│  • predict(x)       — y = mx + b                                   │
-│  • confidence(data) — 1 − (MAE / 100), range [0, 1]               │
+│  ai/predictor.js — LinearRegression class                           │
+│  • train(data[])    — Ordinary Least Squares, O(n)                  │
+│  • predict(x)       — y = mx + b                                    │
+│  • confidence(data) — 1 − (MAE / 100), range [0, 1]                 │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -278,4 +278,4 @@ ISC License — see [LICENSE](./LICENSE) for details.
 *Bridging the gap between reactive and predictive infrastructure management*
 
 </div>
->>>>>>> 91111d1 (Updated Files)
+
