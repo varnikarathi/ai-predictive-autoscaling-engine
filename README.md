@@ -10,6 +10,11 @@
 [![Vite](https://img.shields.io/badge/Vite-7-646CFF?style=flat-square&logo=vite&logoColor=white)](https://vitejs.dev)
 [![Express](https://img.shields.io/badge/Express-5-000000?style=flat-square&logo=express&logoColor=white)](https://expressjs.com)
 
+### 🚀 **[Live Demo](https://ai-predictive-autoscaling-engine.onrender.com)**
+
+> **Test Credentials for Live Dashboard & Admin Panel:**
+> - Username: `admin`
+> - Password: `admin`
 
 </div>
 
