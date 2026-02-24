@@ -267,11 +267,6 @@ Connect to `ws://localhost:5001`. Messages are JSON with a `type` field:
 
 ---
 
-## 📄 License
-
-ISC License — see [LICENSE](./LICENSE) for details.
-
----
 
 <div align="center">
   
@@ -280,7 +275,4 @@ ISC License — see [LICENSE](./LICENSE) for details.
 *Bridging the gap between reactive and predictive infrastructure management*
 
 </div>
-<<<<<<< HEAD
 
-=======
->>>>>>> 8950aa5 (Added Security)
