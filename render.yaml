@@ -1,0 +1,27 @@
+services:
+  - type: web
+    name: ai-autoscaling-engine
+    env: node
+    buildCommand: npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: MAX_INSTANCES
+        value: 10
+      - key: MIN_INSTANCES
+        value: 1
+      - key: SCALE_UP_THRESHOLD
+        value: 70
+      - key: SCALE_DOWN_THRESHOLD
+        value: 30
+      - key: COOLDOWN_MS
+        value: 20000
+      - key: POLL_INTERVAL_MS
+        value: 5000
+      - key: MIN_TRAIN_SAMPLES
+        value: 6
+      - key: CPU_HISTORY_WINDOW
+        value: 10
+      - key: CONFIDENCE_THRESHOLD
+        value: 0.6

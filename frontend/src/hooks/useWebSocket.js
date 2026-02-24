@@ -1,7 +1,9 @@
 import { useEffect, useRef, useCallback } from 'react';
 import useAutoscalerStore from '../store/useAutoscalerStore';
 
-const WS_URL = 'ws://localhost:5001';
+const WS_URL = import.meta.env.PROD
+    ? window.location.origin.replace(/^http/, 'ws')
+    : 'ws://localhost:5000';
 const RECONNECT_DELAY = 3000;
 
 export function useWebSocket() {

@@ -3,6 +3,7 @@
     "version": "1.0.0",
     "description": "AI-based predictive autoscaling engine with real-time WebSocket dashboard, ML prediction, and cloud deployment.",
     "scripts": {
+        "build": "npm install --prefix backend && npm install --prefix frontend && npm run build --prefix frontend",
         "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
         "dev:backend": "cd backend && npm run dev",
         "dev:frontend": "cd frontend && npm run dev",

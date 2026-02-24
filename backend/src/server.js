@@ -3,21 +3,24 @@ const app = require("./app");
 const { startAutoScaler } = require("./autoscaler/autoscaler.js");
 const { WebSocketServer } = require("ws");
 
+const http = require("http");
+
 const PORT = process.env.PORT || 5000;
-const WS_PORT = process.env.WS_PORT || 5001;
 
-// HTTP Server
-app.listen(PORT, () => {
-    console.log(`HTTP server running on http://localhost:${PORT}`);
-});
+// Create a single HTTP server from the Express app
+const server = http.createServer(app);
 
-// WebSocket Server
-const wss = new WebSocketServer({ port: WS_PORT });
+// Attach WebSocket Server to the same HTTP server
+const wss = new WebSocketServer({ server });
 wss.on("connection", (ws) => {
     console.log("[WS] Dashboard connected");
     ws.on("close", () => console.log("[WS] Dashboard disconnected"));
 });
-console.log(`WebSocket server running on ws://localhost:${WS_PORT}`);
+
+// Start listening on the single port
+server.listen(PORT, () => {
+    console.log(`Server running on http://localhost:${PORT} and ws://localhost:${PORT}`);
+});
 
 // Start autoscaler loop — passes wss so it can broadcast
 startAutoScaler(wss);
