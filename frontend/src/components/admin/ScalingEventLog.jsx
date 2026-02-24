@@ -28,7 +28,7 @@ export default function ScalingEventLog({ events }) {
                     {actionEvents.map((evt, i) => (
                         <tr key={i} style={{ borderBottom: '1px solid var(--glass-border)' }}>
                             <td style={{ padding: '16px 8px', color: 'var(--text-secondary)' }}>
-                                {new Date(evt.ts || Date.now()).toLocaleTimeString()}
+                                {new Date(evt.ts || Date.now()).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' })}
                             </td>
                             <td style={{ padding: '16px 8px' }}>
                                 <span style={{

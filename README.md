@@ -37,6 +37,7 @@ Instead of waiting for CPU to spike above a threshold and then scrambling to spi
 | 📡 **Real-time** | WebSocket push from server to dashboard (~5s refresh), auto-reconnect, live connection badge |
 | ⚙️ **Scaling Logic** | Configurable thresholds, cooldown guard, confidence gate, min/max instance bounds |
 | 📊 **Dashboard** | CPU & Memory line/area charts with threshold reference lines, metric cards with health status, scaling event log |
+| 🔒 **Security** | Authentication required for Live Dashboard and Admin configurations via `ProtectedRoute` flow |
 | 🎨 **Design** | Glassmorphism UI, Inter + JetBrains Mono fonts, animated gradient background, hover lift cards, color-coded health states |
 | 🔧 **Dev Experience** | Single `npm run dev` starts both servers, Vite proxy, `.env` config for all parameters |
 | 🏭 **Production** | Health check endpoint, graceful configuration via env vars, MVC architecture, modular services |
@@ -148,6 +149,7 @@ ai-predictive-autoscaling-engine/
 │       ├── App.jsx               # Root component composition
 │       ├── index.css             # Design system (tokens, glassmorphism, animations)
 │       ├── components/
+│       │   ├── ProtectedRoute.jsx # Route guard checking auth state
 │       │   ├── Header.jsx        # Title + live connection badge
 │       │   ├── MetricCard.jsx    # Glass card with progress bar + health color
 │       │   ├── ScalingPanel.jsx  # Instances · action · AI prediction panels
@@ -278,4 +280,7 @@ ISC License — see [LICENSE](./LICENSE) for details.
 *Bridging the gap between reactive and predictive infrastructure management*
 
 </div>
+<<<<<<< HEAD
 
+=======
+>>>>>>> 8950aa5 (Added Security)

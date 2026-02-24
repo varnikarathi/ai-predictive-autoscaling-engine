@@ -47,7 +47,7 @@ export default function LiveDashboard() {
                 />
                 <MetricCard
                     title="Requests / sec"
-                    icon="📡"
+                    icon=""
                     value={requestsPerSecond}
                     unit="req/s"
                     subtitle="Simulated traffic load"
