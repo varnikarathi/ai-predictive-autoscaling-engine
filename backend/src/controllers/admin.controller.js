@@ -17,9 +17,16 @@ function updateConfig(req, res) {
     res.json(adminService.updateConfig(patch));
 }
 
-function getStats(req, res) {
-    const history = getHistory();
-    res.json(adminService.getStats(history));
+async function getStats(req, res) {
+    try {
+        const history = getHistory();
+        const stats = await adminService.getStats(history);
+        res.json(stats);
+    } catch (err) {
+        console.error("Failed to get stats:", err);
+        res.status(500).json({ error: "Internal server error" });
+    }
 }
 
 module.exports = { getConfig, updateConfig, getStats };
+

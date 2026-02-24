@@ -1,44 +1,40 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
 
-/* ── Pink Glassmorphism Tokens ──────────────────────────── */
+/* ── Dark Slate Theme Tokens ──────────────────────────── */
 :root {
-  --color-bg-start: #4a0828;
-  /* Deep wine */
-  --color-bg-mid: #8b0f4e;
-  /* Ruby pink */
-  --color-bg-end: #d91680;
-  /* Vivid magenta */
+  --color-bg-base: #1f222d;
+  --color-surface: #2b2f3e;
 
-  --glass-bg: rgba(255, 255, 255, 0.06);
-  --glass-border: rgba(255, 255, 255, 0.15);
-  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  --glass-bg: var(--color-surface);
+  --glass-border: rgba(255, 255, 255, 0.05);
+  --glass-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 
-  --accent-hot: #ff2d78;
-  /* Neon pink */
-  --accent-rose: #ff6eb4;
-  /* Soft rose */
+  --accent-primary: #5eb4d4;
+  /* Soft cyan */
   --accent-green: #10b981;
-  /* Emerald for success */
   --accent-yellow: #fbbf24;
-  /* Amber for warning */
   --accent-red: #ef4444;
-  /* Red for critical */
 
   /* Legacy variable mappings to prevent breaking old cards */
-  --color-bg-primary: var(--color-bg-start);
-  --color-bg-secondary: var(--glass-bg);
-  --color-bg-tertiary: rgba(255, 255, 255, 0.1);
+  --color-bg-start: var(--color-bg-base);
+  --color-bg-mid: var(--color-bg-base);
+  --color-bg-end: var(--color-bg-base);
+  --accent-hot: var(--accent-primary);
+  --accent-rose: var(--accent-primary);
+  --color-bg-primary: var(--color-bg-base);
+  --color-bg-secondary: var(--color-surface);
+  --color-bg-tertiary: rgba(255, 255, 255, 0.05);
   --color-border: var(--glass-border);
-  --color-accent-blue: var(--accent-hot);
-  --color-accent-cyan: var(--accent-rose);
+  --color-accent-blue: var(--accent-primary);
+  --color-accent-cyan: var(--accent-primary);
   --color-accent-green: var(--accent-green);
   --color-accent-yellow: var(--accent-yellow);
   --color-accent-red: var(--accent-red);
 
-  --text-primary: #ffffff;
-  --text-secondary: rgba(255, 255, 255, 0.7);
-  --text-muted: rgba(255, 255, 255, 0.45);
-  /* Legacy mappings */
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+
   --color-text-primary: var(--text-primary);
   --color-text-secondary: var(--text-secondary);
   --color-text-muted: var(--text-muted);
@@ -63,81 +59,48 @@ body,
   min-height: 100%;
   font-family: var(--font-sans);
   color: var(--text-primary);
-  background: var(--color-bg-mid);
+  background: var(--color-bg-base);
   -webkit-font-smoothing: antialiased;
 }
 
-/* ── Utilities: Pink Glassmorphism ──────────────────────── */
+/* ── Utilities: Dark Slate Flat ─────────────────────────── */
 .glass {
   background: var(--glass-bg);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
   border: 1px solid var(--glass-border);
   box-shadow: var(--glass-shadow);
+  /* no backdrop blur to keep it perfectly flat as requested */
 }
 
 .animated-bg {
-  background: linear-gradient(135deg, var(--color-bg-start) 0%, var(--color-bg-mid) 50%, var(--color-bg-end) 100%);
-  position: relative;
-  overflow: hidden;
-}
-
-/* Decorative orbs in background */
-.animated-bg::before,
-.animated-bg::after {
-  content: "";
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(80px);
-  z-index: 0;
-  opacity: 0.6;
-}
-
-.animated-bg::before {
-  width: 400px;
-  height: 400px;
-  background: var(--accent-hot);
-  top: -100px;
-  left: -100px;
-  animation: float-orb 15s ease-in-out infinite alternate;
-}
-
-.animated-bg::after {
-  width: 500px;
-  height: 500px;
-  background: var(--color-bg-end);
-  bottom: -150px;
-  right: -100px;
-  animation: float-orb 20s ease-in-out infinite alternate-reverse;
-}
-
-/* Ensure foreground content stays above the orbs */
-.animated-bg>* {
-  position: relative;
-  z-index: 1;
+  background: var(--color-bg-base);
 }
 
 .card-hover {
-  transition: transform 300ms cubic-bezier(0.4, 0, 0.2, 1),
-    box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform 200ms ease, box-shadow 200ms ease;
 }
 
 .card-hover:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3), 0 0 20px rgba(255, 45, 120, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+/* ── Progress Indicators (for the new styling match) ──────── */
+.progress-bar-container {
+  height: 6px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-top: 12px;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: var(--accent-primary);
+  border-radius: 4px;
+  transition: width 0.3s ease;
 }
 
 /* ── Animations ─────────────────────────────────────────── */
-@keyframes float-orb {
-  0% {
-    transform: translate(0, 0) scale(1);
-  }
-
-  100% {
-    transform: translate(50px, 50px) scale(1.1);
-  }
-}
-
 @keyframes pulse-live {
 
   0%,
@@ -162,10 +125,10 @@ body,
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.1);
   border-radius: 999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.2);
 }

@@ -1,3 +1,5 @@
+const ScalingEvent = require('../models/ScalingEvent');
+
 // Mutable config — can be patched at runtime via POST /api/admin/config
 let config = {
     scaleUpThreshold: parseInt(process.env.SCALE_UP_THRESHOLD) || 70,
@@ -9,14 +11,12 @@ let config = {
 };
 
 const startTime = Date.now();
-const scalingEvents = []; // shared log
 
-// Pre-populate with a startup event so logs aren't totally empty initially
-scalingEvents.push({
+// Pre-populate with a startup event directly into DB in background
+ScalingEvent.create({
     action: "SYSTEM_STARTUP",
-    instances: config.minInstances,
-    ts: new Date().toISOString()
-});
+    instances: config.minInstances
+}).catch(console.error);
 
 function getConfig() { return { ...config }; }
 
@@ -26,17 +26,33 @@ function updateConfig(patch) {
 }
 
 function recordEvent(event) {
-    scalingEvents.push({ ...event, ts: new Date().toISOString() });
-    if (scalingEvents.length > 200) scalingEvents.shift();
+    // Fire and forget to the database
+    ScalingEvent.create(event).catch(console.error);
 }
 
-function getStats(metricsHistory) {
+async function getStats(metricsHistory) {
     const uptimeMs = Date.now() - startTime;
-    const totalEvents = scalingEvents.filter(e => e.action !== 'NO_ACTION' && e.action !== 'COOLDOWN').length;
+
+    // Aggregate from DB
+    const totalEvents = await ScalingEvent.count({
+        where: {
+            action: { [require('sequelize').Op.notIn]: ['NO_ACTION', 'COOLDOWN'] }
+        }
+    });
+
+    const maxEvt = await ScalingEvent.max('instances');
+    const peakInstances = maxEvt || 1;
+
+    const recentEvents = await ScalingEvent.findAll({
+        order: [['ts', 'DESC']],
+        limit: 50
+    });
+
     const recent = metricsHistory.slice(-20);
     const avgCPU = recent.length ? Math.round(recent.reduce((s, m) => s + m.cpu, 0) / recent.length) : 0;
-    const peakInstances = scalingEvents.reduce((max, e) => Math.max(max, e.instances || 1), 1);
-    return { uptimeMs, totalEvents, avgCPU, peakInstances, events: scalingEvents.slice(-50) };
+
+    return { uptimeMs, totalEvents, avgCPU, peakInstances, events: recentEvents.reverse() };
 }
 
 module.exports = { getConfig, updateConfig, recordEvent, getStats };
+

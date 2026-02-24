@@ -23,27 +23,27 @@ const CustomTooltip = ({ active, payload, label }) => {
 export default function MemoryChart({ data }) {
     return (
         <div className="glass" style={{ padding: '24px', borderRadius: '16px' }}>
-            <p style={{ fontSize: '12px', letterSpacing: '0.08em', color: 'var(--color-text-secondary)', fontWeight: 600, textTransform: 'uppercase', marginBottom: '20px' }}>
-                💾 Memory Utilization
+            <p style={{ fontSize: '12px', letterSpacing: '0.05em', color: 'var(--text-secondary)', fontWeight: 600, textTransform: 'uppercase', marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                Memory Utilization
             </p>
             <ResponsiveContainer width="100%" height={200}>
                 <AreaChart data={data} margin={{ top: 5, right: 10, bottom: 5, left: -15 }}>
                     <defs>
                         <linearGradient id="memGradient" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="5%" stopColor="#06b6d4" stopOpacity={0.25} />
-                            <stop offset="95%" stopColor="#06b6d4" stopOpacity={0} />
+                            <stop offset="5%" stopColor="var(--accent-primary)" stopOpacity={0.25} />
+                            <stop offset="95%" stopColor="var(--accent-primary)" stopOpacity={0} />
                         </linearGradient>
                     </defs>
-                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(51,65,85,0.5)" />
+                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
                     <XAxis
                         dataKey="time"
-                        tick={{ fill: 'var(--color-text-muted)', fontSize: 10 }}
+                        tick={{ fill: 'var(--text-muted)', fontSize: 10 }}
                         interval="preserveStartEnd"
                         tickLine={false}
                     />
                     <YAxis
                         domain={[0, 100]}
-                        tick={{ fill: 'var(--color-text-muted)', fontSize: 10 }}
+                        tick={{ fill: 'var(--text-muted)', fontSize: 10 }}
                         tickLine={false}
                         axisLine={false}
                     />
@@ -51,11 +51,11 @@ export default function MemoryChart({ data }) {
                     <Area
                         type="monotone"
                         dataKey="value"
-                        stroke="var(--color-accent-cyan)"
+                        stroke="var(--accent-primary)"
                         strokeWidth={2}
                         fill="url(#memGradient)"
                         dot={false}
-                        activeDot={{ r: 4, fill: 'var(--color-accent-cyan)' }}
+                        activeDot={{ r: 4, fill: 'var(--accent-primary)' }}
                         isAnimationActive={false}
                     />
                 </AreaChart>

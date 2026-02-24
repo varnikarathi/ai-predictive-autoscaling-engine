@@ -1,6 +1,9 @@
 import { NavLink } from 'react-router-dom';
+import useAuthStore from '../store/useAuthStore';
 
 export default function Sidebar({ isConnected }) {
+    const { token, logout, username } = useAuthStore();
+
     const linkStyle = ({ isActive }) => ({
         display: 'flex',
         alignItems: 'center',
@@ -33,7 +36,6 @@ export default function Sidebar({ isConnected }) {
             zIndex: 10,
         }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '48px' }}>
-                <span style={{ fontSize: '28px' }}>⚡</span>
                 <h1 style={{
                     fontSize: '20px',
                     fontWeight: 700,
@@ -48,12 +50,42 @@ export default function Sidebar({ isConnected }) {
 
             <nav style={{ display: 'flex', flexDirection: 'column', gap: '8px', flex: 1 }}>
                 <NavLink to="/" style={linkStyle}>
-                    <span>📊</span> Live Dashboard
+                    Live Dashboard
                 </NavLink>
                 <NavLink to="/admin" style={linkStyle}>
-                    <span>⚙️</span> System Admin
+                    System Admin
                 </NavLink>
             </nav>
+
+            {token && (
+                <div style={{
+                    marginBottom: '16px',
+                    padding: '12px',
+                    borderRadius: '12px',
+                    background: 'rgba(0,0,0,0.15)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between'
+                }}>
+                    <div style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>
+                        User: <span style={{ color: '#fff', fontWeight: 600 }}>{username}</span>
+                    </div>
+                    <button
+                        onClick={() => logout()}
+                        style={{
+                            background: 'transparent',
+                            border: 'none',
+                            color: 'var(--accent-red)',
+                            fontSize: '13px',
+                            cursor: 'pointer',
+                            fontWeight: 600
+                        }}
+                    >
+                        Sign Out
+                    </button>
+                </div>
+            )}
+
 
             <div style={{
                 marginTop: 'auto',

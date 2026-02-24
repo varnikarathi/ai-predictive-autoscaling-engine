@@ -4,8 +4,11 @@ import ScalingPanel from '../components/ScalingPanel';
 import CPUChart from '../components/CPUChart';
 import MemoryChart from '../components/MemoryChart';
 import { useMetrics } from '../hooks/useMetrics';
+import useAuthStore from '../store/useAuthStore';
+import AdminSection from '../components/AdminSection';
 
 export default function LiveDashboard() {
+    const token = useAuthStore(state => state.token);
     const {
         cpu, memory, requestsPerSecond,
         cpuHistory, memoryHistory,
@@ -28,7 +31,7 @@ export default function LiveDashboard() {
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '20px', marginBottom: '24px' }}>
                 <MetricCard
                     title="CPU Usage"
-                    icon="🖥️"
+                    icon=""
                     value={cpu}
                     unit="%"
                     status={cpuStatus}
@@ -36,7 +39,7 @@ export default function LiveDashboard() {
                 />
                 <MetricCard
                     title="Memory"
-                    icon="💾"
+                    icon=""
                     value={memory}
                     unit="%"
                     status={memStatus}
@@ -58,10 +61,16 @@ export default function LiveDashboard() {
                 scalingEvents={scalingEvents}
             />
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '24px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '40px' }}>
                 <CPUChart data={cpuHistory} />
                 <MemoryChart data={memoryHistory} />
             </div>
+
+            {token && (
+                <div style={{ borderTop: '1px solid var(--color-border)', paddingTop: '40px', marginTop: '40px' }}>
+                    <AdminSection />
+                </div>
+            )}
         </>
     );
 }

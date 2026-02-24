@@ -5,9 +5,9 @@ export default function StatsBar({ stats }) {
     const uptimeSecs = Math.floor((stats.uptimeMs % 60000) / 1000);
 
     const Stat = ({ label, value }) => (
-        <div style={{ flex: 1, borderRight: '1px solid var(--glass-border)', padding: '0 20px' }}>
-            <div style={{ fontSize: '13px', color: 'var(--text-muted)', marginBottom: '6px' }}>{label}</div>
-            <div style={{ fontSize: '24px', fontWeight: 600, fontFamily: 'var(--font-mono)' }}>{value}</div>
+        <div style={{ flex: 1, borderRight: '1px solid var(--glass-border)', padding: '0 24px' }}>
+            <div style={{ fontSize: '12px', letterSpacing: '0.05em', color: 'var(--text-secondary)', textTransform: 'uppercase', marginBottom: '8px', fontWeight: 600 }}>{label}</div>
+            <div style={{ fontSize: '32px', fontWeight: 300, color: 'var(--accent-primary)', fontFamily: 'var(--font-sans)', lineHeight: 1.2 }}>{value}</div>
         </div>
     );
 
@@ -19,11 +19,11 @@ export default function StatsBar({ stats }) {
             marginBottom: '24px'
         }}>
             <Stat label="Uptime" value={`${uptimeMins}m ${uptimeSecs}s`} />
-            <Stat label="Total Scale Events" value={stats.totalEvents} />
-            <Stat label="Average CPU (Last 20)" value={`${stats.avgCPU}%`} />
-            <div style={{ flex: 1, padding: '0 20px' }}>
-                <div style={{ fontSize: '13px', color: 'var(--text-muted)', marginBottom: '6px' }}>Peak Instances</div>
-                <div style={{ fontSize: '24px', fontWeight: 600, fontFamily: 'var(--font-mono)' }}>{stats.peakInstances}</div>
+            <Stat label="Scale Events" value={stats.totalEvents} />
+            <Stat label="Avg CPU (20s)" value={`${stats.avgCPU}%`} />
+            <div style={{ flex: 1, padding: '0 24px' }}>
+                <div style={{ fontSize: '12px', letterSpacing: '0.05em', color: 'var(--text-secondary)', textTransform: 'uppercase', marginBottom: '8px', fontWeight: 600 }}>Peak Instances</div>
+                <div style={{ fontSize: '32px', fontWeight: 300, color: 'var(--accent-primary)', fontFamily: 'var(--font-sans)', lineHeight: 1.2 }}>{stats.peakInstances}</div>
             </div>
         </div>
     );

@@ -10,7 +10,6 @@ export default function Header({ isConnected }) {
         }}>
             <div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '6px' }}>
-                    <span style={{ fontSize: '28px' }}>⚡</span>
                     <h1 style={{
                         fontSize: '26px',
                         fontWeight: 700,
