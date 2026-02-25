@@ -54,5 +54,15 @@ async function getStats(metricsHistory) {
     return { uptimeMs, totalEvents, avgCPU, peakInstances, events: recentEvents.reverse() };
 }
 
-module.exports = { getConfig, updateConfig, recordEvent, getStats };
+async function clearEvents() {
+    await ScalingEvent.destroy({ where: {} });
+    // optionally put a startup event back
+    ScalingEvent.create({
+        action: "SYSTEM_STARTUP",
+        instances: config.minInstances,
+        ts: new Date()
+    }).catch(console.error);
+}
+
+module.exports = { getConfig, updateConfig, recordEvent, getStats, clearEvents };
 

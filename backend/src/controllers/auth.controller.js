@@ -1,4 +1,6 @@
 const jwt = require('jsonwebtoken');
+const { clearHistory } = require('../services/metrics.service');
+const { clearEvents } = require('../services/admin.service');
 
 function login(req, res) {
     const { username, password } = req.body;
@@ -8,6 +10,10 @@ function login(req, res) {
     const validPass = process.env.ADMIN_PASS || 'admin';
 
     if (username === validUser && password === validPass) {
+        // Clear history for the new session
+        clearHistory();
+        clearEvents();
+
         // Generate JWT
         const token = jwt.sign(
             { username },

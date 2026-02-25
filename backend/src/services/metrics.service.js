@@ -23,4 +23,9 @@ async function generateMetrics() {
 function getHistory() {
     return history;
 }
-module.exports = { generateMetrics, getHistory };
+
+function clearHistory() {
+    history.length = 0;
+}
+
+module.exports = { generateMetrics, getHistory, clearHistory };
