@@ -11,6 +11,9 @@ export function useMetrics() {
         predictedCPU,
         confidence,
         isConnected,
+        modelPredictions,
+        activeModel,
+        predictionHistory,
     } = useAutoscalerStore();
 
     const getStatus = (value, warnThreshold, critThreshold) => {
@@ -36,5 +39,9 @@ export function useMetrics() {
         isConnected,
         cpuStatus,
         memStatus,
+        modelPredictions,
+        activeModel,
+        predictionHistory,
     };
 }
+

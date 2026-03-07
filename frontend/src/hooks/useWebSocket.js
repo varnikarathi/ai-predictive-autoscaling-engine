@@ -9,7 +9,7 @@ const RECONNECT_DELAY = 3000;
 export function useWebSocket() {
     const ws = useRef(null);
     const reconnectTimer = useRef(null);
-    const { updateMetrics, setScalingDecision, setConnectionStatus } = useAutoscalerStore();
+    const { updateMetrics, setScalingDecision, setConnectionStatus, addPredictionHistory } = useAutoscalerStore();
 
     const connect = useCallback(() => {
         if (ws.current?.readyState === WebSocket.OPEN) return;
@@ -26,6 +26,7 @@ export function useWebSocket() {
                 const { type, payload } = JSON.parse(event.data);
                 if (type === 'METRICS_UPDATE') updateMetrics(payload);
                 if (type === 'SCALING_DECISION') setScalingDecision(payload);
+                if (type === 'PREDICTION_HISTORY') addPredictionHistory(payload);
             } catch (e) {
                 console.error('[WS] parse error', e);
             }
@@ -39,7 +40,7 @@ export function useWebSocket() {
         ws.current.onerror = () => {
             ws.current?.close();
         };
-    }, [updateMetrics, setScalingDecision, setConnectionStatus]);
+    }, [updateMetrics, setScalingDecision, setConnectionStatus, addPredictionHistory]);
 
     useEffect(() => {
         connect();

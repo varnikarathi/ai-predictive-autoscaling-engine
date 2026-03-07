@@ -3,6 +3,8 @@ import MetricCard from '../components/MetricCard';
 import ScalingPanel from '../components/ScalingPanel';
 import CPUChart from '../components/CPUChart';
 import MemoryChart from '../components/MemoryChart';
+import PredictionChart from '../components/PredictionChart';
+import ModelComparisonPanel from '../components/ModelComparisonPanel';
 import { useMetrics } from '../hooks/useMetrics';
 import useAuthStore from '../store/useAuthStore';
 import AdminSection from '../components/AdminSection';
@@ -15,6 +17,7 @@ export default function LiveDashboard() {
         scalingDecision, scalingEvents,
         predictedCPU, confidence,
         cpuStatus, memStatus,
+        modelPredictions, activeModel, predictionHistory,
     } = useMetrics();
 
     return (
@@ -61,9 +64,17 @@ export default function LiveDashboard() {
                 scalingEvents={scalingEvents}
             />
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '40px' }}>
+            <div style={{ marginBottom: '24px' }}>
+                <ModelComparisonPanel modelPredictions={modelPredictions} activeModel={activeModel} />
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '24px' }}>
                 <CPUChart data={cpuHistory} />
                 <MemoryChart data={memoryHistory} />
+            </div>
+
+            <div style={{ marginBottom: '40px' }}>
+                <PredictionChart data={predictionHistory} />
             </div>
 
             {token && (
@@ -74,3 +85,4 @@ export default function LiveDashboard() {
         </>
     );
 }
+

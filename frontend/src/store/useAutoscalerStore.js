@@ -7,6 +7,13 @@ const useAutoscalerStore = create((set) => ({
     scalingDecision: { action: 'NO_ACTION', currentInstances: 1 },
     predictedCPU: 0,
     confidence: 0,
+    activeModel: 'linearRegression',
+    modelPredictions: {
+        linearRegression: { predicted: 0, confidence: 0 },
+        exponentialSmoothing: { predicted: 0, confidence: 0 },
+        movingAverage: { predicted: 0, confidence: 0 },
+    },
+    predictionHistory: [],
     cpuHistory: [],
     memoryHistory: [],
     rpsHistory: [],
@@ -22,6 +29,8 @@ const useAutoscalerStore = create((set) => ({
             },
             predictedCPU: metrics.predictedCPU ?? state.predictedCPU,
             confidence: metrics.confidence ?? state.confidence,
+            activeModel: metrics.activeModel ?? state.activeModel,
+            modelPredictions: metrics.models ?? state.modelPredictions,
             cpuHistory: [
                 ...state.cpuHistory.slice(-(MAX_HISTORY - 1)),
                 { time: new Date().toLocaleTimeString(), value: metrics.cpu },
@@ -33,6 +42,14 @@ const useAutoscalerStore = create((set) => ({
             rpsHistory: [
                 ...state.rpsHistory.slice(-(MAX_HISTORY - 1)),
                 { time: new Date().toLocaleTimeString(), value: metrics.requestsPerSecond },
+            ],
+        })),
+
+    addPredictionHistory: (entry) =>
+        set((state) => ({
+            predictionHistory: [
+                ...state.predictionHistory.slice(-(MAX_HISTORY - 1)),
+                { time: new Date().toLocaleTimeString(), ...entry },
             ],
         })),
 
@@ -58,3 +75,4 @@ const useAutoscalerStore = create((set) => ({
 }));
 
 export default useAutoscalerStore;
+
