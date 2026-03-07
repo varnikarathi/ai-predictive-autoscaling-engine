@@ -64,7 +64,7 @@ Instead of waiting for CPU to spike above a threshold and then scrambling to spi
 │   App.jsx                                                            │
 │   ├── Sidebar               (nav, auth, connection status)           │
 │   ├── MetricCard ×3         (CPU · Memory · RPS with health colors)  │
-│   ├── ScalingPanel          (instances · last action · AI prediction) │
+│   ├── ScalingPanel          (instances · last action · AI prediction)│
 │   ├── ModelComparisonPanel  (3 models side-by-side + active badge)   │
 │   ├── CPUChart + MemoryChart (Recharts with threshold lines)         │
 │   └── PredictionChart       (Predicted vs Actual CPU overlay)        │
@@ -72,7 +72,7 @@ Instead of waiting for CPU to spike above a threshold and then scrambling to spi
                                │ WebSocket push every 5s
                                ▼
 ┌──────────────────────────────────────────────────────────────────────┐
-│              BACKEND  (Express + WebSocket on :5000)                  │
+│              BACKEND  (Express + WebSocket on :5000)                 │
 │                                                                      │
 │  REST API                        WebSocket Server                    │
 │  ├── POST /api/auth/login        └── Broadcasts:                     │
@@ -85,20 +85,20 @@ Instead of waiting for CPU to spike above a threshold and then scrambling to spi
 │  └── GET  /api/admin/stats                                           │
 │                                                                      │
 │  Autoscaler Loop (every 5s)                                          │
-│  generateMetrics → cpuHistory → train all 3 models → pick best      │
+│  generateMetrics → cpuHistory → train all 3 models → pick best       │
 │  → evaluateScaling → broadcast to all connected dashboards           │
 └──────────────────────────────┬───────────────────────────────────────┘
                                │ require
                                ▼
 ┌──────────────────────────────────────────────────────────────────────┐
-│                      AI ENGINE (ai/)                                  │
+│                      AI ENGINE (ai/)                                 │
 │                                                                      │
 │  predictor.js            — Linear Regression (OLS), y = mx + b       │
 │  exponentialSmoothing.js — Exponential Smoothing, alpha = 0.3        │
 │  movingAverage.js        — Simple Moving Average, window = 5         │
 │                                                                      │
 │  Each model implements: train(data), predict(x), confidence(data)    │
-│  Confidence = 1 − (MAE / 100), clamped to [0, 1]                    │
+│  Confidence = 1 − (MAE / 100), clamped to [0, 1]                     │
 └──────────────────────────────────────────────────────────────────────┘
 ```
 
