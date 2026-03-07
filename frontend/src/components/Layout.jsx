@@ -8,15 +8,9 @@ export default function Layout() {
     const { isConnected } = useMetrics();
 
     return (
-        <div className="animated-bg" style={{ minHeight: '100vh', display: 'flex' }}>
+        <div className="animated-bg app-layout">
             <Sidebar isConnected={isConnected} />
-
-            <main style={{
-                marginLeft: '260px', // width of sidebar
-                flex: 1,
-                padding: '40px',
-                maxWidth: '1200px',
-            }}>
+            <main className="main-content">
                 <Outlet />
             </main>
         </div>

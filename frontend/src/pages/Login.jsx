@@ -24,12 +24,10 @@ export default function Login() {
             });
 
             const data = await res.json();
-
             if (!res.ok) throw new Error(data.error || 'Login failed');
 
             login(data.token, data.username);
             navigate('/admin');
-
         } catch (err) {
             setError(err.message);
         } finally {
@@ -38,101 +36,45 @@ export default function Login() {
     };
 
     return (
-        <div style={{
-            minHeight: '100vh',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            padding: '20px'
-        }} className="animated-bg">
-            <div className="glass" style={{
-                padding: '40px',
-                borderRadius: '16px',
-                width: '100%',
-                maxWidth: '400px',
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '24px'
-            }}>
-                <div style={{ textAlign: 'center' }}>
-                    <h2 style={{ fontSize: '24px', fontWeight: 600, marginTop: '8px' }}>Admin Access</h2>
-                    <p style={{ color: 'var(--text-muted)', fontSize: '14px', marginTop: '4px' }}>
+        <div className="animated-bg login-page">
+            <div className="glass login-card">
+                <div className="login-header">
+                    <h2 className="login-title">Admin Access</h2>
+                    <p className="login-subtitle">
                         Sign in to manage autoscaler configuration
                     </p>
                 </div>
 
-                {error && (
-                    <div style={{
-                        padding: '12px',
-                        borderRadius: '8px',
-                        background: 'rgba(239, 68, 68, 0.1)',
-                        border: '1px solid var(--accent-red)',
-                        color: 'var(--accent-red)',
-                        fontSize: '14px',
-                        textAlign: 'center'
-                    }}>
-                        {error}
-                    </div>
-                )}
+                {error && <div className="login-error">{error}</div>}
 
-                <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                <form onSubmit={handleSubmit} className="login-form">
                     <div>
-                        <label style={{ display: 'block', fontSize: '13px', color: 'var(--text-secondary)', marginBottom: '8px' }}>
-                            Username
-                        </label>
+                        <label className="form-label">Username</label>
                         <input
                             type="text"
                             required
+                            className="form-input"
                             value={username}
                             onChange={e => setUsername(e.target.value)}
-                            style={{
-                                width: '100%',
-                                padding: '12px',
-                                borderRadius: '8px',
-                                border: '1px solid var(--glass-border)',
-                                background: 'rgba(0,0,0,0.2)',
-                                color: 'var(--text-primary)',
-                                outline: 'none'
-                            }}
                         />
                     </div>
 
                     <div>
-                        <label style={{ display: 'block', fontSize: '13px', color: 'var(--text-secondary)', marginBottom: '8px' }}>
-                            Password
-                        </label>
+                        <label className="form-label">Password</label>
                         <input
                             type="password"
                             required
+                            className="form-input"
                             value={password}
                             onChange={e => setPassword(e.target.value)}
-                            style={{
-                                width: '100%',
-                                padding: '12px',
-                                borderRadius: '8px',
-                                border: '1px solid var(--glass-border)',
-                                background: 'rgba(0,0,0,0.2)',
-                                color: 'var(--text-primary)',
-                                outline: 'none'
-                            }}
                         />
                     </div>
 
                     <button
                         type="submit"
                         disabled={loading}
-                        style={{
-                            padding: '12px',
-                            borderRadius: '8px',
-                            border: 'none',
-                            background: 'var(--accent-cyan)',
-                            color: '#000',
-                            fontWeight: 600,
-                            cursor: loading ? 'wait' : 'pointer',
-                            marginTop: '8px',
-                            transition: 'opacity 0.2s',
-                            opacity: loading ? 0.7 : 1
-                        }}
+                        className="btn-primary"
+                        style={{ marginTop: '8px' }}
                     >
                         {loading ? 'Authenticating...' : 'Sign In'}
                     </button>

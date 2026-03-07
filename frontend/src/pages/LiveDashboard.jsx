@@ -22,19 +22,16 @@ export default function LiveDashboard() {
 
     return (
         <>
-            <div style={{ marginBottom: '40px' }}>
-                <h2 style={{ fontSize: '24px', fontWeight: 600, color: 'var(--text-primary)', marginBottom: '8px' }}>
-                    Live Telemetry Overview
-                </h2>
-                <p style={{ color: 'var(--text-secondary)', fontSize: '14px' }}>
+            <div className="section-header">
+                <h2 className="section-title">Live Telemetry Overview</h2>
+                <p className="section-subtitle">
                     Real-time metrics and AI forecasts updated every 5 seconds.
                 </p>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '20px', marginBottom: '24px' }}>
+            <div className="grid-3 mb-xl">
                 <MetricCard
                     title="CPU Usage"
-                    icon=""
                     value={cpu}
                     unit="%"
                     status={cpuStatus}
@@ -42,7 +39,6 @@ export default function LiveDashboard() {
                 />
                 <MetricCard
                     title="Memory"
-                    icon=""
                     value={memory}
                     unit="%"
                     status={memStatus}
@@ -50,7 +46,6 @@ export default function LiveDashboard() {
                 />
                 <MetricCard
                     title="Requests / sec"
-                    icon=""
                     value={requestsPerSecond}
                     unit="req/s"
                     subtitle="Simulated traffic load"
@@ -64,16 +59,16 @@ export default function LiveDashboard() {
                 scalingEvents={scalingEvents}
             />
 
-            <div style={{ marginBottom: '24px' }}>
+            <div className="mb-xl">
                 <ModelComparisonPanel modelPredictions={modelPredictions} activeModel={activeModel} />
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '24px' }}>
+            <div className="grid-2 mb-xl">
                 <CPUChart data={cpuHistory} />
                 <MemoryChart data={memoryHistory} />
             </div>
 
-            <div style={{ marginBottom: '40px' }}>
+            <div className="mb-2xl">
                 <PredictionChart data={predictionHistory} />
             </div>
 
@@ -85,4 +80,3 @@ export default function LiveDashboard() {
         </>
     );
 }
-

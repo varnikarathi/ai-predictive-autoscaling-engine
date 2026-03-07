@@ -12,7 +12,7 @@ export default function AdminSection() {
 
     const token = useAuthStore(state => state.token);
     const logout = useAuthStore(state => state.logout);
-    // Poll for admin stats every 2s
+
     useEffect(() => {
         if (!token) return;
 
@@ -65,7 +65,6 @@ export default function AdminSection() {
         });
         if (res.status === 401) return logout();
 
-        // refresh stats immediately
         fetch('/api/admin/stats', { headers })
             .then(r => r.json())
             .then(setStats)
@@ -74,19 +73,17 @@ export default function AdminSection() {
 
     return (
         <>
-            <div style={{ marginBottom: '40px' }}>
-                <h2 style={{ fontSize: '24px', fontWeight: 600, color: 'var(--text-primary)', marginBottom: '8px' }}>
-                    System Administration
-                </h2>
-                <p style={{ color: 'var(--text-secondary)', fontSize: '14px' }}>
+            <div className="section-header">
+                <h2 className="section-title">System Administration</h2>
+                <p className="section-subtitle">
                     Manage scaling logic, configure thresholds, and view cluster event logs.
                 </p>
             </div>
 
             <StatsBar stats={stats} />
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+            <div className="grid-2">
+                <div className="flex-col gap-xl">
                     <ThresholdConfig config={config} onSave={handleSaveConfig} />
                     <ManualScaling onScale={handleManualScale} />
                 </div>

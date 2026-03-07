@@ -4,83 +4,60 @@ const MODEL_LABELS = {
     movingAverage: 'Moving Average',
 };
 
-const MODEL_ICONS = {
+const MODEL_ABBREVS = {
     linearRegression: 'LR',
     exponentialSmoothing: 'ES',
     movingAverage: 'MA',
 };
 
+function getConfidenceClass(confidence) {
+    if (confidence >= 70) return 'confidence--high';
+    if (confidence >= 40) return 'confidence--mid';
+    return 'confidence--low';
+}
+
 export default function ModelComparisonPanel({ modelPredictions, activeModel }) {
     return (
-        <div className="glass" style={{ padding: '24px', borderRadius: '16px' }}>
-            <p style={{
-                fontSize: '12px', letterSpacing: '0.05em', color: 'var(--text-secondary)',
-                fontWeight: 600, textTransform: 'uppercase', marginBottom: '20px',
-                display: 'flex', alignItems: 'center', gap: '6px'
-            }}>
-                Model Comparison
-            </p>
+        <div className="glass card">
+            <p className="section-label mb-lg">Model Comparison</p>
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px' }}>
+            <div className="grid-3">
                 {Object.entries(modelPredictions).map(([key, data]) => {
                     const isActive = key === activeModel;
+                    const confClass = getConfidenceClass(data.confidence);
                     return (
-                        <div key={key} style={{
-                            background: isActive ? 'rgba(94, 180, 212, 0.08)' : 'rgba(255, 255, 255, 0.02)',
-                            border: `1px solid ${isActive ? 'var(--accent-primary)' : 'var(--glass-border)'}`,
-                            borderRadius: '12px',
-                            padding: '16px',
-                            transition: 'all 0.3s ease',
-                            position: 'relative',
-                        }}>
-                            {isActive && (
-                                <div style={{
-                                    position: 'absolute', top: '8px', right: '10px',
-                                    fontSize: '9px', fontWeight: 700, letterSpacing: '0.08em',
-                                    color: 'var(--accent-primary)', textTransform: 'uppercase',
-                                    background: 'rgba(94, 180, 212, 0.15)',
-                                    padding: '2px 8px', borderRadius: '4px',
-                                }}>
-                                    Active
-                                </div>
-                            )}
+                        <div key={key} className={`model-card ${isActive ? 'model-card--active' : 'model-card--inactive'}`}>
+                            {isActive && <div className="model-active-badge">Active</div>}
 
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '12px' }}>
-                                <span style={{ fontSize: '16px' }}>{MODEL_ICONS[key]}</span>
-                                <span style={{
-                                    fontSize: '11px', fontWeight: 600,
-                                    color: isActive ? 'var(--text-primary)' : 'var(--text-secondary)',
-                                    letterSpacing: '0.03em',
+                            <div className="flex-row gap-sm mb-md">
+                                <span className="model-icon">{MODEL_ABBREVS[key]}</span>
+                                <span className="model-name" style={{
+                                    color: isActive ? 'var(--text-primary)' : 'var(--text-secondary)'
                                 }}>
                                     {MODEL_LABELS[key]}
                                 </span>
                             </div>
 
-                            <div style={{ marginBottom: '12px' }}>
-                                <p style={{ fontSize: '10px', color: 'var(--text-muted)', marginBottom: '4px' }}>PREDICTED CPU</p>
-                                <div style={{
-                                    fontFamily: 'var(--font-sans)', fontSize: '32px', fontWeight: 300,
-                                    color: isActive ? 'var(--accent-primary)' : 'var(--text-secondary)',
-                                    lineHeight: 1,
+                            <div className="mb-md">
+                                <p className="scaling-panel-label">PREDICTED CPU</p>
+                                <div className="model-number" style={{
+                                    color: isActive ? 'var(--accent-primary)' : 'var(--text-secondary)'
                                 }}>
                                     {data.predicted || '--'}
-                                    <span style={{ fontSize: '16px', fontWeight: 400, color: 'var(--text-muted)', marginLeft: '2px' }}>%</span>
+                                    <span className="model-number-unit">%</span>
                                 </div>
                             </div>
 
                             <div>
-                                <p style={{ fontSize: '10px', color: 'var(--text-muted)', marginBottom: '6px' }}>CONFIDENCE</p>
-                                <div style={{
-                                    fontSize: '18px', fontWeight: 600,
-                                    color: data.confidence >= 70 ? 'var(--accent-green)' : data.confidence >= 40 ? 'var(--accent-yellow)' : 'var(--accent-red)',
-                                    marginBottom: '8px',
-                                }}>
+                                <p className="scaling-panel-label mb-sm">CONFIDENCE</p>
+                                <div className={`confidence-value ${confClass} mb-sm`}>
                                     {data.confidence || 0}%
                                 </div>
-                                <div className="progress-bar-container" style={{ height: '4px' }}>
+                                <div className="progress-bar-container progress-bar-container--sm">
                                     <div className="progress-bar-fill" style={{
                                         width: `${data.confidence || 0}%`,
-                                        backgroundColor: data.confidence >= 70 ? 'var(--accent-green)' : data.confidence >= 40 ? 'var(--accent-yellow)' : 'var(--accent-red)',
+                                        backgroundColor: data.confidence >= 70 ? 'var(--accent-green)'
+                                            : data.confidence >= 40 ? 'var(--accent-yellow)' : 'var(--accent-red)',
                                     }} />
                                 </div>
                             </div>
@@ -89,7 +66,7 @@ export default function ModelComparisonPanel({ modelPredictions, activeModel }) 
                 })}
             </div>
 
-            <p style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '16px' }}>
+            <p className="hint-text" style={{ marginTop: '16px' }}>
                 The model with the highest confidence score is automatically selected to drive scaling decisions.
             </p>
         </div>
