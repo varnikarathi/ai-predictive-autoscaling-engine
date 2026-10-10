@@ -6,7 +6,8 @@ async function getCurrentMetrics(req, res) {
 }
 
 function getMetricsHistory(req, res) {
-    const limit = parseInt(req.query.limit) || 60;
+    const requestedLimit = req.query.limit === undefined ? 60 : Number(req.query.limit);
+    const limit = Number.isInteger(requestedLimit) ? Math.max(1, Math.min(requestedLimit, 100)) : 60;
     res.json(getHistory().slice(-limit));
 }
 

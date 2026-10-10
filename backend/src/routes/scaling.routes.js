@@ -1,10 +1,11 @@
 const express = require("express");
 const router = express.Router();
 const { scaleSystem } = require("../controllers/scaling.controllers");
-const requireAuth = require("../middleware/auth.middleware");
+const { requireAuth, requireRole } = require("../middleware/auth.middleware");
 
-router.post("/", requireAuth, scaleSystem);
-router.post("/evaluate", requireAuth, scaleSystem);
+router.use(requireAuth, requireRole('admin'));
+router.post("/", scaleSystem);
+router.post("/evaluate", scaleSystem);
 
 module.exports = router;
 

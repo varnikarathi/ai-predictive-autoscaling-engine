@@ -1,9 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const { getCurrentMetrics, getMetricsHistory } = require("../controllers/metrics.controller");
-const requireAuth = require("../middleware/auth.middleware");
 
-router.get("/current", requireAuth, getCurrentMetrics);
-router.get("/history", requireAuth, getMetricsHistory);
+// Public, read-only endpoints expose simulated demo telemetry only.
+router.get("/current", getCurrentMetrics);
+router.get("/history", getMetricsHistory);
 
 module.exports = router;

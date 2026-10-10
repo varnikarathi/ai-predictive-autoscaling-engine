@@ -1,4 +1,3 @@
-import Header from '../components/Header';
 import MetricCard from '../components/MetricCard';
 import ScalingPanel from '../components/ScalingPanel';
 import CPUChart from '../components/CPUChart';
@@ -6,11 +5,8 @@ import MemoryChart from '../components/MemoryChart';
 import PredictionChart from '../components/PredictionChart';
 import ModelComparisonPanel from '../components/ModelComparisonPanel';
 import { useMetrics } from '../hooks/useMetrics';
-import useAuthStore from '../store/useAuthStore';
-import AdminSection from '../components/AdminSection';
 
 export default function LiveDashboard() {
-    const token = useAuthStore(state => state.token);
     const {
         cpu, memory, requestsPerSecond,
         cpuHistory, memoryHistory,
@@ -25,8 +21,11 @@ export default function LiveDashboard() {
             <div className="section-header">
                 <h2 className="section-title">Live Telemetry Overview</h2>
                 <p className="section-subtitle">
-                    Real-time metrics and AI forecasts updated every 5 seconds.
+                    Read-only demo using simulated metrics and AI forecasts updated every 5 seconds.
                 </p>
+                <span style={{ display: 'inline-flex', marginTop: '12px', padding: '6px 10px', borderRadius: '999px', fontSize: '11px', fontWeight: 700, letterSpacing: '0.08em', color: 'var(--color-accent-green)', background: 'rgba(34,197,94,0.08)', border: '1px solid rgba(34,197,94,0.25)' }}>
+                    READ-ONLY DEMO · SIMULATED DATA
+                </span>
             </div>
 
             <div className="grid-3 mb-xl">
@@ -42,7 +41,7 @@ export default function LiveDashboard() {
                     value={memory}
                     unit="%"
                     status={memStatus}
-                    subtitle="Live system memory"
+                    subtitle="Simulated memory"
                 />
                 <MetricCard
                     title="Requests / sec"
@@ -72,11 +71,6 @@ export default function LiveDashboard() {
                 <PredictionChart data={predictionHistory} />
             </div>
 
-            {token && (
-                <div style={{ borderTop: '1px solid var(--color-border)', paddingTop: '40px', marginTop: '40px' }}>
-                    <AdminSection />
-                </div>
-            )}
         </>
     );
 }
