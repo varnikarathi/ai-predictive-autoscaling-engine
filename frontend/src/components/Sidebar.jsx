@@ -2,7 +2,7 @@ import { NavLink } from 'react-router-dom';
 import useAuthStore from '../store/useAuthStore';
 
 export default function Sidebar({ isConnected }) {
-    const { token, logout, username } = useAuthStore();
+    const { token, role, logout, username } = useAuthStore();
 
     const linkClass = ({ isActive }) =>
         `sidebar-link ${isActive ? 'sidebar-link--active' : 'sidebar-link--inactive'}`;
@@ -17,9 +17,7 @@ export default function Sidebar({ isConnected }) {
                 <NavLink to="/" className={linkClass}>
                     Live Dashboard
                 </NavLink>
-                <NavLink to="/admin" className={linkClass}>
-                    System Admin
-                </NavLink>
+                {role === 'admin' && <NavLink to="/admin" className={linkClass}>System Admin</NavLink>}
             </nav>
 
             {token && (
@@ -32,6 +30,7 @@ export default function Sidebar({ isConnected }) {
                     </button>
                 </div>
             )}
+            {!token && <NavLink to="/login" className={linkClass}>Admin Sign In</NavLink>}
 
             <div className="sidebar-status">
                 <span className={`status-dot ${isConnected ? 'status-dot--live' : 'status-dot--dead'}`} />

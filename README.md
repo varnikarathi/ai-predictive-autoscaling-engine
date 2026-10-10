@@ -12,9 +12,7 @@
 
 ### [Live Demo](https://ai-predictive-autoscaling-engine.onrender.com)
 
-> **Test Credentials for Live Dashboard & Admin Panel:**
-> - Username: `admin`
-> - Password: `admin`
+The live dashboard is open for read-only exploration. It uses simulated metrics; the demo does not read the Render host's CPU or memory and does not provision or scale cloud infrastructure. Administrative controls require a separately configured admin account.
 
 </div>
 
@@ -26,7 +24,7 @@ The **AI Predictive Autoscaling Engine** combines multiple custom-built ML model
 
 Instead of waiting for CPU to spike above a threshold and then scrambling to spin up instances, this engine:
 
-1. **Collects** live system metrics every 5 seconds (real CPU, memory via `systeminformation`)
+1. **Generates** simulated CPU, memory, and request metrics every 5 seconds for the public demo
 2. **Trains** three ML models on a rolling 10-sample CPU history window
 3. **Compares** model predictions and selects the highest-confidence model automatically
 4. **Predicts** the next CPU value and **decides** to scale up, scale down, or hold
@@ -42,7 +40,7 @@ Instead of waiting for CPU to spike above a threshold and then scrambling to spi
 | **Real-time** | WebSocket push every ~5s, auto-reconnect with status badge, live model comparison panel |
 | **Scaling Logic** | Configurable thresholds, cooldown guard, confidence gate, min/max instance bounds, manual override |
 | **Dashboard** | CPU & Memory charts, metric cards with health status, scaling event log, model comparison panel, predicted vs actual chart |
-| **Security** | JWT authentication, protected routes, admin-only configuration panel |
+| **Security** | JWT authentication, server-enforced admin role, read-only public demo |
 | **Design** | BEM-structured CSS with design tokens, dark theme, Inter + JetBrains Mono fonts |
 | **Dev Experience** | Single `npm run dev` starts both servers, Vite proxy, `.env` config for all parameters |
 | **Production** | Health check endpoint, SQLite event persistence, Render deployment config |
@@ -77,12 +75,12 @@ Instead of waiting for CPU to spike above a threshold and then scrambling to spi
 │  REST API                        WebSocket Server                    │
 │  ├── POST /api/auth/login        └── Broadcasts:                     │
 │  ├── GET  /api/auth/verify            METRICS_UPDATE                 │
-│  ├── GET  /api/metrics/current        SCALING_DECISION               │
-│  ├── GET  /api/metrics/history        PREDICTION_HISTORY             │
-│  ├── POST /api/scaling                                               │
-│  ├── GET  /api/admin/config                                          │
-│  ├── POST /api/admin/config                                          │
-│  └── GET  /api/admin/stats                                           │
+│  ├── GET  /api/metrics/current  (public simulated data)              │
+│  ├── GET  /api/metrics/history  (public simulated data)              │
+│  ├── POST /api/scaling           (admin only)                         │
+│  ├── GET  /api/admin/config      (admin only)                         │
+│  ├── POST /api/admin/config      (admin only)                         │
+│  └── GET  /api/admin/stats       (admin only)                         │
 │                                                                      │
 │  Autoscaler Loop (every 5s)                                          │
 │  generateMetrics → cpuHistory → train all 3 models → pick best       │
@@ -141,7 +139,7 @@ ai-predictive-autoscaling-engine/
 │   └── movingAverage.js           # Simple Moving Average (window=5)
 │
 ├── backend/
-│   ├── .env                       # All config (ports, thresholds, intervals)
+│   ├── .env.example               # Placeholder values only; real .env is ignored
 │   ├── package.json
 │   └── src/
 │       ├── server.js              # HTTP + WebSocket on single port
@@ -166,7 +164,7 @@ ai-predictive-autoscaling-engine/
 │       │   └── scaling.routes.js
 │       └── services/
 │           ├── admin.service.js    # Config management + event recording
-│           ├── metrics.service.js  # systeminformation + RPS simulation
+│           ├── metrics.service.js  # simulated demo metrics only
 │           └── scaling.service.js  # Threshold / cooldown / instance logic
 │
 ├── frontend/
@@ -267,11 +265,21 @@ MIN_TRAIN_SAMPLES=6         # Minimum history points before predicting
 CPU_HISTORY_WINDOW=10       # Rolling window size for training
 CONFIDENCE_THRESHOLD=0.6    # Minimum ML confidence required to act
 
-# Auth
-JWT_SECRET=your_secret_key
-ADMIN_USER=admin
-ADMIN_PASS=admin
+# Authentication (required; set private values, never commit real secrets)
+JWT_SECRET=<unique random secret, at least 32 characters>
+ADMIN_USER=<private admin username>
+ADMIN_PASS_HASH=<bcrypt hash of the private admin password>
 ```
+
+The same three values must be set as Render environment variables. `backend/.env.example` contains placeholders only. The server refuses to start with a missing, short, or placeholder JWT secret, or without a valid admin username and bcrypt hash. It also rejects the publicly documented `admin` password. There is no fallback admin account.
+
+Before redeploying, replace the previously published admin password and rotate `JWT_SECRET` in the Render dashboard. Rotating the JWT secret invalidates tokens created with the old secret. Set `ADMIN_USER` to the private admin username and `ADMIN_PASS_HASH` to a bcrypt hash of a new private password. Set `CORS_ORIGIN` to the exact HTTPS origin serving the app, with no trailing slash. Do not put production secrets in `render.yaml` or commit a real `.env` file.
+
+## Public Recruiter Demo
+
+Visitors can open the dashboard without an account. The visible read-only indicator identifies the CPU, memory, request, prediction, and scaling data as simulated. Metrics are generated by the application; it does not read host telemetry or call a cloud provider to change infrastructure. The public WebSocket only broadcasts these simulated dashboard updates.
+
+The `/api/metrics/current` and `/api/metrics/history` endpoints are public and read-only. Admin configuration, admin statistics, and scaling mutation endpoints require a signed JWT with the `admin` role. The React route guard only controls navigation; the backend independently checks that role and returns `401` or `403` where appropriate. There are no shared recruiter or demo credentials.
 
 ---
 
@@ -282,12 +290,14 @@ ADMIN_PASS=admin
 | `GET` | `/health` | No | Service health check |
 | `POST` | `/api/auth/login` | No | Authenticate, returns JWT |
 | `GET` | `/api/auth/verify` | Yes | Validate token |
-| `GET` | `/api/metrics/current` | Yes | Latest CPU, memory, RPS |
-| `GET` | `/api/metrics/history` | Yes | Historical metrics array |
-| `POST` | `/api/scaling` | Yes | Manual scale: `{ action: "set", instances: 5 }` |
-| `GET` | `/api/admin/config` | Yes | Current scaling thresholds |
-| `POST` | `/api/admin/config` | Yes | Update thresholds at runtime |
-| `GET` | `/api/admin/stats` | Yes | Uptime, events, avg CPU, peak |
+| `GET` | `/api/metrics/current` | Public, read-only | Latest simulated CPU, memory, and RPS |
+| `GET` | `/api/metrics/history` | Public, read-only | Recent simulated metrics (limit 1–100) |
+| `POST` | `/api/scaling` | Admin role | Simulated manual scaling: `{ action: "set", instances: 5 }` |
+| `GET` | `/api/admin/config` | Admin role | Current scaling thresholds |
+| `POST` | `/api/admin/config` | Admin role | Update validated thresholds at runtime |
+| `GET` | `/api/admin/stats` | Admin role | Uptime, events, average CPU, peak |
+
+Visitors can explore the dashboard without signing in. Admin actions require an 8-hour JWT issued only after validating the configured admin credentials. UI route guards are for navigation only; the API enforces the admin role. Autoscaling and instance counts are simulations and do not change cloud infrastructure.
 
 ### WebSocket Events
 
@@ -318,7 +328,7 @@ Connect to `ws://localhost:5000`. Messages are JSON with a `type` field:
 | Layer | Technology |
 |-------|-----------|
 | **ML Engine** | Vanilla JavaScript — Linear Regression (OLS), Exponential Smoothing, Moving Average |
-| **Backend** | Node.js, Express 5, `ws` (WebSocket), `systeminformation`, `dotenv`, Sequelize + SQLite |
+| **Backend** | Node.js, Express 5, `ws` (WebSocket), `dotenv`, Sequelize + SQLite |
 | **Frontend** | React 19, Vite 7, Zustand, Recharts |
 | **Styling** | Vanilla CSS with BEM naming, design tokens, Inter + JetBrains Mono |
 | **Auth** | JWT (jsonwebtoken) |

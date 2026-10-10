@@ -2,11 +2,20 @@ services:
   - type: web
     name: ai-autoscaling-engine
     env: node
+    healthCheckPath: /health
     buildCommand: npm run build
     startCommand: npm start
     envVars:
       - key: NODE_ENV
         value: production
+      - key: JWT_SECRET
+        sync: false
+      - key: ADMIN_USER
+        sync: false
+      - key: ADMIN_PASS_HASH
+        sync: false
+      - key: CORS_ORIGIN
+        value: https://ai-predictive-autoscaling-engine.onrender.com
       - key: MAX_INSTANCES
         value: 10
       - key: MIN_INSTANCES

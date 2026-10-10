@@ -1,19 +1,18 @@
-const si = require("systeminformation");
 const history = [];
+let tick = 0;
 
 async function generateMetrics() {
-    const cpuData = await si.currentLoad();                     //returns load,cores etc.          
-    const memData = await si.mem();                             //returns total,available ,used etc.
-    const cpu = Math.round(cpuData.currentLoad);
-
-    const memory = Math.round((memData.total - memData.available) / memData.total * 100);
-
-    const requestsPerSecond = Math.floor(Math.random() * 500);      //stimulates traffic load 
+    // The public demo deliberately uses generated metrics, never host telemetry.
+    tick += 1;
+    const cpu = Math.max(18, Math.min(92, Math.round(52 + 22 * Math.sin(tick / 8) + (Math.random() * 8 - 4))));
+    const memory = Math.max(24, Math.min(88, Math.round(48 + 13 * Math.sin(tick / 13 + 1) + (Math.random() * 6 - 3))));
+    const requestsPerSecond = Math.floor(80 + 220 * (0.5 + 0.5 * Math.sin(tick / 6)) + Math.random() * 25);
     const metric = {
         cpu,
         memory,
         requestsPerSecond,
-        timestamp: new Date()
+        timestamp: new Date(),
+        simulated: true,
     };
     history.push(metric);
     if (history.length > 100) history.shift();

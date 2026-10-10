@@ -1,6 +1,6 @@
 const adminService = require('./admin.service');
 
-let currentInstances = 1;
+let currentInstances = adminService.getConfig().minInstances;
 let lastScale = 0;
 
 function evaluateScaling(cpuUsage, confidence) {

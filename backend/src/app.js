@@ -7,24 +7,30 @@ const scalingRoutes = require("./routes/scaling.routes");
 const metricsRoutes = require("./routes/metrics.routes");
 const adminRoutes = require("./routes/admin.routes");
 const authRoutes = require("./routes/auth.routes");
+const { getAllowedOrigins } = require('./config/security');
 
 const app = express();
 
 // CORS — restrict to allowed origins
-const allowedOrigins = (process.env.CORS_ORIGIN || 'http://localhost:5173').split(',');
+const allowedOrigins = getAllowedOrigins();
 app.use(cors({
         origin: function (origin, callback) {
                 // Allow requests with no origin (e.g., server-to-server, curl)
-                if (!origin || allowedOrigins.includes(origin)) {
+                if (!origin || allowedOrigins.has(origin)) {
                         callback(null, true);
                 } else {
-                        callback(new Error('Not allowed by CORS'));
+                        const error = new Error('Origin not allowed');
+                        error.status = 403;
+                        callback(error);
                 }
         },
-        credentials: true,
+        credentials: false,
+        methods: ['GET', 'POST', 'OPTIONS'],
+        maxAge: 600,
 }));
 
-app.use(express.json());
+app.use(express.json({ limit: '10kb' }));
+app.set('trust proxy', 1);
 
 // Sync Database
 sequelize.sync().then(() => {
@@ -68,8 +74,10 @@ if (process.env.NODE_ENV === 'production') {
 
 // Global error handler — prevents stack traces from leaking to clients
 app.use((err, req, res, next) => {
-        console.error('[ERROR]', err.message);
-        res.status(err.status || 500).json({ error: err.message || 'Internal server error' });
+        if (res.headersSent) return next(err);
+        const status = err.status === 403 ? 403 : (err.status || 500);
+        if (status >= 500) console.error('[ERROR] Request failed');
+        res.status(status).json({ error: status === 403 ? 'Origin not allowed' : 'Request failed' });
 });
 
 module.exports = app;

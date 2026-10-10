@@ -10,13 +10,13 @@ function App() {
   return (
     <Routes>
       <Route path="/login" element={<Login />} />
-      <Route path="/" element={
-        <ProtectedRoute>
-          <Layout />
-        </ProtectedRoute>
-      }>
+      <Route path="/" element={<Layout />}>
         <Route index element={<LiveDashboard />} />
-        <Route path="admin" element={<AdminDashboard />} />
+        <Route path="admin" element={
+          <ProtectedRoute role="admin">
+            <AdminDashboard />
+          </ProtectedRoute>
+        } />
       </Route>
     </Routes>
   );

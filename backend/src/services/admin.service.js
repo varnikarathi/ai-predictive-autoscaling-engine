@@ -21,7 +21,19 @@ ScalingEvent.create({
 function getConfig() { return { ...config }; }
 
 function updateConfig(patch) {
-    config = { ...config, ...patch };
+    const next = { ...config, ...patch };
+    const validPercent = (value) => Number.isFinite(value) && value >= 0 && value <= 100;
+    const validInteger = (value, min = 1) => Number.isInteger(value) && value >= min;
+    if (!validPercent(next.scaleUpThreshold) || !validPercent(next.scaleDownThreshold) ||
+        next.scaleDownThreshold >= next.scaleUpThreshold ||
+        !validInteger(next.minInstances) || !validInteger(next.maxInstances) ||
+        next.minInstances > next.maxInstances || !validInteger(next.cooldownMs, 0) ||
+        !Number.isFinite(next.confidenceThreshold) || next.confidenceThreshold < 0 || next.confidenceThreshold > 1) {
+        const error = new Error('Configuration values are outside the allowed ranges');
+        error.status = 400;
+        throw error;
+    }
+    config = next;
     return { ...config };
 }
 

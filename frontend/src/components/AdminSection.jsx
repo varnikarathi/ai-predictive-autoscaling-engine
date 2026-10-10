@@ -76,7 +76,7 @@ export default function AdminSection() {
             <div className="section-header">
                 <h2 className="section-title">System Administration</h2>
                 <p className="section-subtitle">
-                    Manage scaling logic, configure thresholds, and view cluster event logs.
+                    Manage simulated thresholds and instance counts. No cloud resources are modified.
                 </p>
             </div>
 

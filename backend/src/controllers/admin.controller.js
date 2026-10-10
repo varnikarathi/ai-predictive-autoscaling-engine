@@ -9,12 +9,16 @@ function updateConfig(req, res) {
     const patch = {};
     const allowed = ['scaleUpThreshold', 'scaleDownThreshold', 'maxInstances', 'minInstances', 'cooldownMs', 'confidenceThreshold'];
     allowed.forEach(key => {
-        if (req.body[key] !== undefined) patch[key] = Number(req.body[key]);
+        if (req.body?.[key] !== undefined) patch[key] = Number(req.body[key]);
     });
     if (Object.keys(patch).length === 0) {
         return res.status(400).json({ error: 'No valid config keys provided' });
     }
-    res.json(adminService.updateConfig(patch));
+    try {
+        return res.json(adminService.updateConfig(patch));
+    } catch (err) {
+        return res.status(err.status || 400).json({ error: err.message });
+    }
 }
 
 async function getStats(req, res) {
