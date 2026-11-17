@@ -6,9 +6,12 @@ export default function Sidebar({ isConnected }) {
 
     return (
         <div className="glass sidebar">
-            <h1 className="sidebar-brand">
-                Autoscaling<br />Engine
-            </h1>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '40px' }}>
+                <img src="/logo.svg" alt="Logo" style={{ width: '38px', height: '38px', borderRadius: '8px' }} />
+                <h1 className="sidebar-brand" style={{ marginBottom: 0 }}>
+                    Autoscaling<br />Engine
+                </h1>
+            </div>
 
             <nav className="sidebar-nav">
                 <NavLink to="/" className={linkClass}>
