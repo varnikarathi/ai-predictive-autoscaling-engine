@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import useAuthStore from '../store/useAuthStore';
 import StatsBar from './admin/StatsBar';
 import ManualScaling from './admin/ManualScaling';
 import ThresholdConfig from './admin/ThresholdConfig';
@@ -10,65 +9,56 @@ export default function AdminSection() {
     const [config, setConfig] = useState(null);
     const [stats, setStats] = useState(null);
 
-    const token = useAuthStore(state => state.token);
-    const logout = useAuthStore(state => state.logout);
-
     useEffect(() => {
-        if (!token) return;
-
-        const headers = { 'Authorization': `Bearer ${token}` };
-
-        fetch('/api/admin/config', { headers })
-            .then(r => {
-                if (r.status === 401) { logout(); return null; }
-                return r.json();
-            })
+        fetch('/api/admin/config')
+            .then(r => r.json())
             .then(c => c && setConfig(c))
             .catch(console.error);
 
-        const interval = setInterval(() => {
-            fetch('/api/admin/stats', { headers })
-                .then(r => {
-                    if (r.status === 401) { logout(); return null; }
-                    return r.json();
-                })
+        const fetchStats = () => {
+            fetch('/api/admin/stats')
+                .then(r => r.json())
                 .then(s => s && setStats(s))
                 .catch(console.error);
-        }, 2000);
+        };
+
+        fetchStats();
+        const interval = setInterval(fetchStats, 2000);
 
         return () => clearInterval(interval);
-    }, [token, logout]);
+    }, []);
 
     const handleSaveConfig = async (newConfig) => {
-        const headers = {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-        };
-        const res = await fetch('/api/admin/config', {
-            method: 'POST',
-            headers,
-            body: JSON.stringify(newConfig)
-        });
-        if (res.status === 401) return logout();
-        setConfig(await res.json());
+        try {
+            const res = await fetch('/api/admin/config', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(newConfig)
+            });
+            if (res.ok) {
+                setConfig(await res.json());
+            }
+        } catch (err) {
+            console.error('Failed to save config:', err);
+        }
     };
 
     const handleManualScale = async (instances) => {
-        const headers = {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-        };
-        const res = await fetch('/api/scaling', {
-            method: 'POST',
-            headers,
-            body: JSON.stringify({ action: 'set', instances })
-        });
-        if (res.status === 401) return logout();
-
-        fetch('/api/admin/stats', { headers })
-            .then(r => r.json())
-            .then(setStats)
-            .catch(console.error);
+        try {
+            const res = await fetch('/api/scaling', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action: 'set', instances })
+            });
+            if (res.ok) {
+                fetch('/api/admin/stats')
+                    .then(r => r.json())
+                    .then(setStats)
+                    .catch(console.error);
+            }
+        } catch (err) {
+            console.error('Failed to scale:', err);
+        }
     };
 
     return (

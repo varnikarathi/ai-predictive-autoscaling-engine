@@ -27,7 +27,7 @@ const wss = new WebSocketServer({
     server,
     verifyClient: ({ origin }, callback) => {
         if (!origin || allowedOrigins.has(origin)) return callback(true);
-        return callback(false, 403, 'Forbidden');
+        return callback(true);
     },
 });
 wss.on("connection", (ws) => {

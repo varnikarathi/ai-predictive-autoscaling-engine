@@ -11,23 +11,8 @@ const { getAllowedOrigins } = require('./config/security');
 
 const app = express();
 
-// CORS — restrict to allowed origins
-const allowedOrigins = getAllowedOrigins();
-app.use(cors({
-        origin: function (origin, callback) {
-                // Allow requests with no origin (e.g., server-to-server, curl)
-                if (!origin || allowedOrigins.has(origin)) {
-                        callback(null, true);
-                } else {
-                        const error = new Error('Origin not allowed');
-                        error.status = 403;
-                        callback(error);
-                }
-        },
-        credentials: false,
-        methods: ['GET', 'POST', 'OPTIONS'],
-        maxAge: 600,
-}));
+// CORS — allow all origins for public demo
+app.use(cors());
 
 app.use(express.json({ limit: '10kb' }));
 app.set('trust proxy', 1);
