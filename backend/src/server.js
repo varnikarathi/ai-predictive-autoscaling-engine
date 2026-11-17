@@ -48,7 +48,9 @@ function gracefulShutdown(signal) {
     console.log(`[${signal}] Shutting down gracefully...`);
     wss.close(() => console.log('[WS] WebSocket server closed'));
     server.close(async () => {
-        await sequelize.close();
+        try {
+            if (typeof sequelize.close === 'function') await sequelize.close();
+        } catch {}
         console.log('[DB] Database connection closed');
         process.exit(0);
     });

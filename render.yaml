@@ -8,6 +8,8 @@ services:
     envVars:
       - key: NODE_ENV
         value: production
+      - key: NODE_VERSION
+        value: 20.18.0
       - key: CORS_ORIGIN
         value: https://ai-predictive-autoscaling-engine.onrender.com
       - key: MAX_INSTANCES
